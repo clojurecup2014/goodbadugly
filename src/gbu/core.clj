@@ -2,18 +2,19 @@
   (:require [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
             [compojure.handler :refer [site]]
             [compojure.route :as route]
-            [ring.adapter.jetty :as jetty]))
+            [ring.adapter.jetty :as jetty]
+            [gbu.web :as web]))
 
 (defn home []
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body "Hello"})
+   :body (#'web/base "Home" "Hi")})
 
 (defroutes app
   (GET "/" []
     (home))
-  (ANY "*" []
-    (route/not-found "Oops 404")))
+  (route/resources "/")
+  (route/not-found "Oops 404"))
 
 (defn -main [& [port]]
   (let [port (int 5000)]
