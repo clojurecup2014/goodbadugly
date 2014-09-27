@@ -1,6 +1,7 @@
 (ns gbu.api
   (:require [clj-http.client :as client]
             [tentacles.repos :as repos]
+            [tentacles.orgs :as orgs]
             [clojure.data.json :as json]))
 
 (def ^:private authorize-url "https://github.com/login/oauth/authorize")
@@ -41,12 +42,24 @@
      :headers {"location" "/repos"
                "set-cookie" (str "token=" token)}}))
 
+(defn- owner?
+  [repo]
+  (get-in repo [:permissions :admin]))
+
+(defn- all-user-repos
+  [token]
+  (let [opts       {:oauth-token token
+                    :type :owner}
+        user-repos (repos/repos opts)
+        orgs-repos (->> (orgs/orgs opts)
+                     (mapcat #(repos/org-repos (:login %) opts))
+                     (filter owner?))]
+    (into user-repos orgs-repos)))
+
 (defn repos 
   [cookies]
-  (let [opts      {:oauth-token (token cookies)
-                   :type :owner}
-        user-repos (repos/repos opts)]
-    (prn "repos: " (count user-repos))
+  (if-let [token (token cookies)]
     {:status 200
-     :body (json/write-str user-repos)}))
-
+     :body (json/write-str (all-user-repos token))}
+    {:status 403
+     :body "Token missing."}))

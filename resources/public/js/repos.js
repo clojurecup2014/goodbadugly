@@ -25,7 +25,7 @@ var Repos = {
         var userList = new List('repo-list', options);
     },
     error: function() {
-
+        $("#repos").html("Oops, seems like we messed up! :(");
     }
 };
 
