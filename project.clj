@@ -9,6 +9,7 @@
                  [hiccup "1.0.5"]
                  [ring/ring-jetty-adapter "1.2.2"]
                  [clj-http "1.0.0"]
-                 [tentacles "0.2.7"]]
+                 [tentacles "0.2.7"]
+                 [org.clojure/data.json "0.2.5"]]
   :main gbu.core
   :uberjar-name "gbu.jar")

@@ -1,5 +1,6 @@
 (ns gbu.web
-  (:require [net.cgrand.enlive-html :as html]))
+  (:require [net.cgrand.enlive-html :as html]
+            [gbu.api :as api]))
 
 (html/deftemplate base "templates/base.html"
   [title content]
@@ -23,7 +24,7 @@
 
 (defn repos
   [cookies]
-  (if-let [{:keys [value]} (cookies "token")]
+  (if-let [token (api/token cookies)]
     {:status 200
      :headers {"Content-Type" "text/html"}
      :body (#'base "Repos" (repos-snip))}

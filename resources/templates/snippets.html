@@ -19,18 +19,19 @@
     <img src="img/loading.gif" border="0"/>
   </h1>
   <script src="js/repos.js"></script>
-  <script id="repo-list" type="text/x-handlebars-template">
-    <div class="search-box">
-      Search: <input />
+  <script id="repo-list-tplt" type="text/x-handlebars-template">
+    <div id="repo-list">
+      <div class="search-box">
+        <input class="search" placeholder="Search" />
+      </div>
+      <ul class="list">
+        {{{items}}}
+      </ul>
     </div>
-    <ul>
-      {{items}}
-    </ul>
   </script>
-  <script id="repo-item" type="text/x-handlebars-template">
-    <div>
-      {{full_name}}
-
-    </div>
+  <script id="repo-item-tplt" type="text/x-handlebars-template">
+    <li>
+      <span class="name">{{full_name}}</span>
+    </li>
   </script>
 </div>

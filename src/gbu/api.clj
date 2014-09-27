@@ -1,5 +1,7 @@
 (ns gbu.api
-  (:require [clj-http.client :as client]))
+  (:require [clj-http.client :as client]
+            [tentacles.repos :as repos]
+            [clojure.data.json :as json]))
 
 (def ^:private authorize-url "https://github.com/login/oauth/authorize")
 (def ^:private access-token-url "https://github.com/login/oauth/access_token")
@@ -15,6 +17,10 @@
       (map #(split % "="))
       (map vec)
       (into {}))))
+
+(defn token [cookies]
+  (when-let [{:keys [value]} (cookies "token")]
+    value))
 
 (defn login
   []
@@ -37,6 +43,10 @@
 
 (defn repos 
   [cookies]
-  
-  {:status 200
-   :body "[]"})
+  (let [opts      {:oauth-token (token cookies)
+                   :type :owner}
+        user-repos (repos/repos opts)]
+    (prn "repos: " (count user-repos))
+    {:status 200
+     :body (json/write-str user-repos)}))
+

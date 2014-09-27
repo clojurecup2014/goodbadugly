@@ -40,6 +40,14 @@ body {
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
 }
 
+input {
+    color: #666;
+    border: 0px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px #666;
+    padding: 5px
+}
+
 /* Extra markup and styles for table-esque vertical and horizontal centering */
 .site-wrapper {
   display: table;
@@ -63,6 +71,14 @@ body {
   padding: 30px;
 }
 
+.inner.cover ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.inner.cover li {
+    list-style: none;
+}
 
 /*
  * Header
