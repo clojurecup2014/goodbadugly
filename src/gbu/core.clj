@@ -14,6 +14,7 @@
   (GET "/" [] (web/home))
   (GET "/login" [] (web/login))
   (GET "/callback" [code] (web/callback code))
+  (GET "/repos" [] (web/repos))
   (route/resources "/")
   (route/not-found "Oops 404"))
 
