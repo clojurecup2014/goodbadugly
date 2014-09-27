@@ -15,9 +15,22 @@
 </div>
 <div id="repos">
   <h1 class="cover-heading">
-    Please wait while we get your repositories...
+    Please wait while we get your repositories
+    <img src="img/loading.gif" border="0"/>
   </h1>
-  <p class="lead">
-    Repos here.
-  </p>
+  <script src="js/repos.js"></script>
+  <script id="repo-list" type="text/x-handlebars-template">
+    <div class="search-box">
+      Search: <input />
+    </div>
+    <ul>
+      {{items}}
+    </ul>
+  </script>
+  <script id="repo-item" type="text/x-handlebars-template">
+    <div>
+      {{full_name}}
+
+    </div>
+  </script>
 </div>
