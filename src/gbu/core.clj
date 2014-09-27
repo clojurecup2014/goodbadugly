@@ -5,9 +5,10 @@
             [ring.adapter.jetty :as jetty]
             [gbu.web :as web]))
 
-(defn http-port 
+(defn http-port
   []
-  (or (System/getenv "GBU_HTTP_PORT") 5000))
+  (let [env-port (System/getenv "GBU_HTTP_PORT")]
+    (or (and env-port (Integer/parseInt env-port)) 5000)))
 
 (defroutes app
   (GET "/" [] (web/home))
