@@ -63,3 +63,13 @@
      :body (json/write-str (all-user-repos token))}
     {:status 403
      :body "Token missing."}))
+
+(defn on
+  [cookies]
+  {:status 200
+   :body "done"})
+
+(defn off
+  [cookies]
+  {:status 200
+   :body "done"})

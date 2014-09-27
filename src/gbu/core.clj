@@ -17,9 +17,11 @@
   (GET "/" [] (web/home))
   (GET "/repos" {cookies :cookies} (web/repos cookies))
   ;; Endpoints
-  (GET "/login" [] (api/login))
-  (GET "/callback" [code] (api/callback code))
+  (GET "/api/login" [] (api/login))
+  (GET "/api/callback" [code] (api/callback code))
   (GET "/api/repos" {cookies :cookies} (api/repos cookies))
+  (GET "/api/on" {cookies :cookies} (api/on cookies))
+  (GET "/api/off" {cookies :cookies} (api/off cookies))
   (route/resources "/")
   (route/not-found "Oops 404"))
 
