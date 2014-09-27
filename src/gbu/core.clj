@@ -5,6 +5,10 @@
             [ring.adapter.jetty :as jetty]
             [gbu.web :as web]))
 
+(defn http-port 
+  []
+  (or (System/getenv "GBU_HTTP_PORT") 5000))
+
 (defroutes app
   (GET "/" [] (web/home))
   (GET "/login" [] (web/login))
@@ -13,5 +17,4 @@
   (route/not-found "Oops 404"))
 
 (defn -main [& [port]]
-  (let [port (int 5000)]
-    (jetty/run-jetty (site #'app) {:port port :join? false})))
+  (jetty/run-jetty (site #'app) {:port (http-port) :join? false}))
