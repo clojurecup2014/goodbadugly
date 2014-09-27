@@ -5,7 +5,7 @@
 (def ^:private authorize-url "https://github.com/login/oauth/authorize")
 (def ^:private access-token-url "https://github.com/login/oauth/access_token")
 
-(def ^:private scope "user:email")
+(def ^:private scope "repo,user:email")
 (def ^:private client-id "7b43cab01bf06f40d2a0")
 (def ^:private client-secret "9f902d8755cbe38672fc89fecd1c8a3ceb539daa")
 
