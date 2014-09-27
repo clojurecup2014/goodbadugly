@@ -5,14 +5,10 @@
             [ring.adapter.jetty :as jetty]
             [gbu.web :as web]))
 
-(defn home []
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body (#'web/base "Home" "Hi")})
-
 (defroutes app
-  (GET "/" []
-    (home))
+  (GET "/" [] (web/home))
+  (GET "/login" [] (web/login))
+  (GET "/callback" [code] (web/callback code))
   (route/resources "/")
   (route/not-found "Oops 404"))
 
