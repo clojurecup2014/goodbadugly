@@ -22,21 +22,13 @@
         _          (popen/join checkout)]
     path))
 
-(defn- extract-warnings-and-errors
-  [s]
-  (-> s
-    (.replaceAll "^==.*\n" "")
-    (.replaceAll "==.*==\n" "")
-    (.replaceAll "(?s)==.*$" "")))
-
 (defn- run-eastwood 
-  [dir]
-  (let [lein      (popen/popen ["lein" "eastwood"] :redirect true :dir dir)
+  [path]
+  (let [lein      (popen/popen ["lein" "eastwood" "{:results-file true}"] :redirect true :dir path)
         code      (popen/join lein)]
     (when-not (zero? code)
-      (->> (popen/stdout lein)
-        slurp
-        extract-warnings-and-errors))))
+      (let [results-txt (slurp (str path "/eastwood-results.txt"))]
+        (read-string (str "[" results-txt "]"))))))
 
 (defn- handle-pull-req 
   [pr-event]
