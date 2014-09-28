@@ -71,21 +71,31 @@ input {
   padding: 30px;
 }
 
-.inner.cover ul {
-    margin: 0px;
-    padding: 0px;
+#repo-list {
+    margin: 20px;
 }
 
-.inner.cover li {
+#repo-list ul {
+    margin: 0px;
+    padding: 0px;
+    text-align: left;
+}
+
+#repo-list li {
     list-style: none;
 }
 
-.inner.cover li button.on{
+#repo-list li button.on{
     color: #0F0;
 }
 
-.inner.cover li button.off{
+#repo-list li button.off{
     color: #666;
+}
+
+#repo-list input {
+    width: 100%;
+    margin: 20px 0px;
 }
 
 /*
