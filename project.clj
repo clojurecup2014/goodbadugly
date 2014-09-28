@@ -6,10 +6,10 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [compojure "1.1.8"]
                  [enlive "1.1.5"]
-                 [hiccup "1.0.5"]
                  [ring/ring-jetty-adapter "1.2.2"]
                  [clj-http "1.0.0"]
                  [tentacles "0.2.7"]
-                 [org.clojure/data.json "0.2.5"]]
+                 [org.clojure/data.json "0.2.5"]
+                 [popen "0.3.0"]]
   :main gbu.core
   :uberjar-name "gbu.jar")
