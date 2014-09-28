@@ -91,6 +91,7 @@ a file in the project."
       (let [dirname   (clone-repo url sha)
             results   (run-eastwood dirname)]
         (when results
+          (println "Eastwood made" (count results) "comment.")
           (let [files    (file-seq (io/file dirname))
                 comments (pulls/comments user reponame pr-id {:auth github-basic-auth})
                 cnt      (->> results 
@@ -100,6 +101,8 @@ a file in the project."
                            (map (partial create-comment user reponame pr-id sha comments))
                            (filter identity)
                            count)]
+            (println "Deleting temp directory" dirname)
+            (utils/delete-recursively dirname)
             (println "Created" cnt "comments.")))))))
 
 (defmulti handle-event ^:private
