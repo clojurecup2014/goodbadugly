@@ -4,7 +4,6 @@ var Repos = {
     reposUrl: "/api/repos",
     init: function() {
         Repos.load();
-        $(".site-wrapper-inner").removeClass("site-wrapper-inner");
         $("#repos").on("click", "button", Repos.toggle);
     },
     load: function() {
@@ -32,6 +31,7 @@ var Repos = {
             valueNames: [ 'name' ]
         };
         var userList = new List('repo-list', options);
+        $(".site-wrapper-inner").removeClass("site-wrapper-inner");
     },
     error: function(err) {
         alert("Oops, seems like we messed up! :(");
