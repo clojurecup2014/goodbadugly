@@ -62,20 +62,3 @@ the patch."
   (let [re     #"^@@ .*? \+(\d+),.*$"
         [_ number] (re-matches re line)]
     (Integer/parseInt number)))
-
-(comment
- (patch-position "@@ -109,7 +109,7 @@ option_spec_list() ->")
- (def patch (str "@@ -109,7 +109,7 @@ option_spec_list() ->\n     [\n      {help,"
-              " $h, \"help\", undefined, \"Show this help information.\"},\n"
-              "      {config, $c, \"config\", string, Commands},\n-     "
-              "{commands, undefined, \"commands\", undefined, \"Show available"
-              " commands.\"}\n+     {commands, undefined, \"commands\", "
-              "undefined, \"Show available commands.\"} %% Long Line\n    "
-              " ].\n \n -spec process_options([atom()], [string()]) -> ok."
-              "\n@@ -175,3 +175,5 @@ git-hook         Pre-commit Git Hook: "
-              "Gets all staged files and runs the rules\n                  "
-              "                     files.\n \">>,\n    io:put_chars(Commands)."
-              "\n+\n+%% Another dummy change to check how patches are built "
-              "with changes wide apart."))
-  (abs-line->patch-line patch 112)
- )
