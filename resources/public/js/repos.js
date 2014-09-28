@@ -20,6 +20,7 @@ var Repos = {
 
         var itemsHTML = "";
         $.each(items, function(index, item) {
+            item["webhook_active"] = item.gbu == "on";
             itemsHTML += itemTplt(item);
         });
 
@@ -30,6 +31,7 @@ var Repos = {
             valueNames: [ 'name' ]
         };
         var userList = new List('repo-list', options);
+        $(".site-wrapper-inner").removeClass("site-wrapper-inner");
     },
     error: function(err) {
         alert("Oops, seems like we messed up! :(");
@@ -50,10 +52,13 @@ var Repos = {
             .fail(Repos.error);
     },
     updateButton: function(btn) {
-        if(btn.is(".on"))
+        if(btn.is(".on")) {
             btn.removeClass('on').addClass('off');
-        else
+            btn.html("Off");
+        } else {
             btn.removeClass('off').addClass('on');
+            btn.html("On");
+        }
     }
 };
 
