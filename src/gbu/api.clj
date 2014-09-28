@@ -50,6 +50,23 @@
   [repo]
   (get-in repo [:permissions :admin]))
 
+(defn- get-webhook
+  [token user reponame]
+  (let [hooks        (repos/hooks user reponame {:oauth-token token})
+        gbu-webhook? #(= (:url webhook-config)
+                         (get-in % [:config :url]))]
+    (->> hooks
+      (filter gbu-webhook?)
+      first)))
+  
+
+(defn- add-status
+  [token repo]
+  (let [user     (get-in repo [:owner :login])
+        reponame (:name repo)
+        status   (if (get-webhook token user reponame) :on :off)]
+    (assoc repo :gbu status)))
+
 (defn- all-user-repos
   [token]
   (let [opts       {:oauth-token token
@@ -58,7 +75,8 @@
         orgs-repos (->> (orgs/orgs opts)
                      (mapcat #(repos/org-repos (:login %) opts))
                      (filter owner?))]
-    (into user-repos orgs-repos)))
+    (->> (into user-repos orgs-repos)
+      (map (partial add-status token)))))
 
 (defn repos 
   [cookies]
@@ -70,13 +88,19 @@
 
 (defn- create-webhook
   [token user repo]
-  (let [opts    {:oauth-token token 
+  (let [opts    {:oauth-token token
                  :active true
                  :events "pull_request"}]
     (repos/create-hook user repo "web" webhook-config opts)))
 
 (defn- add-gbu-user
-  [token repo])
+  [token repo]
+  (let [owner (:owner repo)]
+    (if (= (:type owner) "Organization")
+      (do
+        (prn "Create Services team")
+        (prn "Add user to team"))
+      (prn "Add user as collaborator"))))
 
 (defn on
   [cookies user reponame]
@@ -89,6 +113,10 @@
      :body "done"}))
 
 (defn off
-  [cookies]
-  {:status 200
-   :body "done"})
+  [cookies user reponame]
+  (let [token   (token cookies)
+        webhook (get-webhook token user reponame)]
+    (when webhook
+      (repos/delete-hook user reponame (:id webhook) {:oauth-token token}))
+    {:status 200
+     :body "done"}))

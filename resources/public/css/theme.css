@@ -80,6 +80,14 @@ input {
     list-style: none;
 }
 
+.inner.cover li button.on{
+    color: #0F0;
+}
+
+.inner.cover li button.off{
+    color: #666;
+}
+
 /*
  * Header
  */

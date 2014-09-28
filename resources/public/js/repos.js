@@ -36,7 +36,7 @@ var Repos = {
     },
     toggle: function() {
         var btn = $(this);
-        var url = Repos.isOn(btn)? Repos.offUrl : Repos.onUrl;
+        var url = btn.is(".on")? Repos.offUrl : Repos.onUrl;
         var fullname = btn.attr("data-full-name");
         var parts = fullname.split("/");
         var user = parts[0];
@@ -45,18 +45,15 @@ var Repos = {
         var toggle = function () {
             Repos.updateButton(btn);
         };
-        $.get(Repos.onUrl, data)
+        $.get(url, data)
             .done(toggle)
             .fail(Repos.error);
     },
     updateButton: function(btn) {
-        if(Repos.isOn(btn))
+        if(btn.is(".on"))
             btn.removeClass('on').addClass('off');
         else
-            btn.removeClass('of').addClass('on');
-    },
-    isOn: function(btn) {
-        btn.hasClass('on');
+            btn.removeClass('off').addClass('on');
     }
 };
 
