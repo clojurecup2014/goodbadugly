@@ -4,6 +4,7 @@ var Repos = {
     reposUrl: "/api/repos",
     init: function() {
         Repos.load();
+        $(".site-wrapper-inner").removeClass("site-wrapper-inner");
         $("#repos").on("click", "button", Repos.toggle);
     },
     load: function() {

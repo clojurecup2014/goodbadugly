@@ -19,7 +19,6 @@ a:hover {
   border: 1px solid #fff;
 }
 
-
 /*
  * Base structure
  */
@@ -110,17 +109,24 @@ input {
 }
 
 #repo-list {
-    margin: 20px;
+    margin: 80px 20px;
 }
 
 #repo-list ul {
     margin: 0px;
     padding: 0px;
     text-align: left;
+    border-radius: 5px;
+    background: rgba(0,0,0,.5);
 }
 
 #repo-list li {
+    padding: 10px;
     list-style: none;
+}
+
+#repo-list li button {
+    border-radius: 5px;
 }
 
 #repo-list li button.on{
@@ -134,6 +140,26 @@ input {
 #repo-list input {
     width: 100%;
     margin: 20px 0px;
+}
+
+#repo-list li button,
+#repo-list li .info {
+    float: left;
+}
+
+#repo-list li .info {
+    margin-left: 10px;
+}
+
+#repo-list li .info h4 {
+    margin: 5px 0px;
+}
+#repo-list li p {
+    margin: 0px;
+}
+
+div.clear {
+    clear: both;
 }
 
 /* Vote for Us */

@@ -32,9 +32,13 @@
   <script id="repo-item-tplt" type="text/x-handlebars-template">
     <li>
       <button data-full-name="{{full_name}}" class="{{gbu}}">On</button>
-      <a href="{{html_url}}">
-        <span class="name">{{full_name}}</span>
-      </a>
+      <div class="info">
+        <a href="{{html_url}}">
+          <h4 class="name">{{full_name}}</h4>
+        </a>
+        <p>{{description}}</p>
+      </div>
+      <div class="clear"></div>
     </li>
   </script>
 </div>
