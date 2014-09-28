@@ -3,5 +3,8 @@
 
 (defn run
   [event-type event-raw]
-  (prn event-type (json/read-str event-raw))
-  {:status 200})
+  (let [event (and (seq event-raw)
+                   (json/read-str event-raw))]
+    (prn event-type event)
+    {:status 200
+     :body "done"}))
