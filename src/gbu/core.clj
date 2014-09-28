@@ -46,3 +46,7 @@
 
 (defn -main [& [port]]
   (jetty/run-jetty (site #'app) {:port (http-port) :join? false}))
+
+(comment
+  (-main)
+)
