@@ -27,20 +27,12 @@
   [filename]
   (.contains (.replaceAll filename ".*\\." "") "clj"))
 
-(defn abs-line->patch-line
-  "Takes the string for a patch and returns 
-the line relative to it or nil if it's outside
-the patch."
-  [patch line-num]
-  (loop [[line & lines] (.split patch "\n")
-         positions      [-1, nil]]
-    (when line
-      (let [line-type (patch-line-type line)
-            [local global :as new-pos] (new-position line positions)]
-        (if (and (= global line-num) 
-                 (not (#{:patch :del} line-type)))
-          local
-          (recur lines new-pos))))))
+
+(defn- patch-position
+  [line]
+  (let [re     #"^@@ .*? \+(\d+),.*$"
+        [_ number] (re-matches re line)]
+    (Integer/parseInt number)))
 
 (defn- patch-line-type [line]
   (case (first line)
@@ -57,8 +49,17 @@ the patch."
     :add    [(inc local) (inc global)]
     :same   [(inc local) (inc global)]))
 
-(defn- patch-position
-  [line]
-  (let [re     #"^@@ .*? \+(\d+),.*$"
-        [_ number] (re-matches re line)]
-    (Integer/parseInt number)))
+(defn abs-line->patch-line
+  "Takes the string for a patch and returns 
+the line relative to it or nil if it's outside
+the patch."
+  [patch line-num]
+  (loop [[line & lines] (.split patch "\n")
+         positions      [-1, nil]]
+    (when line
+      (let [line-type (patch-line-type line)
+            [local global :as new-pos] (new-position line positions)]
+        (if (and (= global line-num) 
+                 (not (#{:patch :del} line-type)))
+          local
+          (recur lines new-pos))))))

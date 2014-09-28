@@ -121,6 +121,8 @@ a file in the project."
 
 (defn run
   [event-type event-raw]
-  (let [event (and (seq event-raw)
+  (if-let [event (and (seq event-raw)
                    (json/read-str event-raw :key-fn utils/keywordize))]
-    (handle-event event-type event)))
+    (handle-event event-type event)
+    {:status 400
+     :body "No PR data."}))
