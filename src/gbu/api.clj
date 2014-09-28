@@ -13,7 +13,7 @@
 
 (def ^:private webhook-config
   {:url "http://goodbadugly.clojurecup.com/api/webhook"
-   :content_type "application/json"})
+   :content_type "json"})
 
 (defn- qs-map 
   [qs]
