@@ -5,7 +5,8 @@
             [compojure.route :as route]
             [ring.adapter.jetty :as jetty]
             [gbu.web :as web]
-            [gbu.api :as api]))
+            [gbu.api :as api]
+            [gbu.webhook :as webhook]))
 
 (defn http-port
   []
@@ -17,11 +18,26 @@
   (GET "/" [] (web/home))
   (GET "/repos" {cookies :cookies} (web/repos cookies))
   ;; Endpoints
-  (GET "/api/login" [] (api/login))
-  (GET "/api/callback" [code] (api/callback code))
-  (GET "/api/repos" {cookies :cookies} (api/repos cookies))
-  (GET "/api/on" {cookies :cookies} (api/on cookies))
-  (GET "/api/off" {cookies :cookies} (api/off cookies))
+  (GET "/api/login"
+    []
+    (api/login))
+  (GET "/api/callback"
+    [code]
+    (api/callback code))
+  (GET "/api/repos"
+    {cookies :cookies} 
+    (api/repos cookies))
+  (GET "/api/on"
+    {cookies :cookies {repo :repo user :user} :params}
+    (api/on cookies user repo))
+  (GET "/api/off"
+    {cookies :cookies {repo :repo user :user} :params}
+    (api/off cookies user repo))
+  (POST "/api/webhook"
+    {headers :headers body :body}
+    (let [event-raw  (slurp body)
+          event-type (headers "x-github-event")]
+      (webhook/run event-type event-raw)))
   (route/resources "/")
   (route/not-found "Oops 404"))
 

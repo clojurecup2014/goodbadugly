@@ -31,7 +31,10 @@
   </script>
   <script id="repo-item-tplt" type="text/x-handlebars-template">
     <li>
-      <span class="name">{{full_name}}</span>
+      <button data-full-name="{{full_name}}">On</button>
+      <a href="{{html_url}}">
+        <span class="name">{{full_name}}</span>
+      </a>
     </li>
   </script>
 </div>

@@ -11,6 +11,10 @@
 (def ^:private client-id "7b43cab01bf06f40d2a0")
 (def ^:private client-secret "9f902d8755cbe38672fc89fecd1c8a3ceb539daa")
 
+(def ^:private webhook-config
+  {:url "http://goodbadugly.clojurecup.com/api/webhook"
+   :content_type "application/json"})
+
 (defn- qs-map 
   [qs]
   (let [split (fn [x s] (map str (.split x s)))]
@@ -64,10 +68,24 @@
     {:status 403
      :body "Token missing."}))
 
+(defn- create-webhook
+  [token user repo]
+  (let [opts    {:oauth-token token 
+                 :active true
+                 :events "pull_request"}]
+    (repos/create-hook user repo "web" webhook-config opts)))
+
+(defn- add-gbu-user
+  [token repo])
+
 (defn on
-  [cookies]
-  {:status 200
-   :body "done"})
+  [cookies user reponame]
+  (let [token   (token cookies)
+        repo    (repos/specific-repo user reponame {:oauth-token token})]
+    (when (:private repo)
+      (add-gbu-user token repo))
+    {:status 200
+     :body "done"}))
 
 (defn off
   [cookies]

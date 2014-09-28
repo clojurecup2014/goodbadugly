@@ -1,6 +1,13 @@
 var Repos = {
+    onUrl: "/api/on",
+    offUrl: "/api/off",
+    reposUrl: "/api/repos",
+    init: function() {
+        Repos.load();
+        $("#repos").on("click", "button", Repos.toggle);
+    },
     load: function() {
-        $.get("/api/repos")
+        $.get(Repos.reposUrl)
             .done(Repos.process)
             .fail(Repos.error);
     },
@@ -24,11 +31,35 @@ var Repos = {
         };
         var userList = new List('repo-list', options);
     },
-    error: function() {
-        $("#repos").html("Oops, seems like we messed up! :(");
+    error: function(err) {
+        alert("Oops, seems like we messed up! :(");
+    },
+    toggle: function() {
+        var btn = $(this);
+        var url = Repos.isOn(btn)? Repos.offUrl : Repos.onUrl;
+        var fullname = btn.attr("data-full-name");
+        var parts = fullname.split("/");
+        var name = parts[0];
+        var repo = parts[1];
+        var data = {name: name, repo: repo};
+        var toggle = function () {
+            Repos.updateButton(btn);
+        };
+        $.get(Repos.onUrl, data)
+            .done(toggle)
+            .fail(Repos.error);
+    },
+    updateButton: function(btn) {
+        if(Repos.isOn(btn))
+            btn.removeClass('on').addClass('off');
+        else
+            btn.removeClass('of').addClass('on');
+    },
+    isOn: function(btn) {
+        btn.hasClass('on');
     }
 };
 
 $(function() {
-    Repos.load();
+    Repos.init();
 });
