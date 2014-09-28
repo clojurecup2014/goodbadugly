@@ -39,9 +39,9 @@ var Repos = {
         var url = Repos.isOn(btn)? Repos.offUrl : Repos.onUrl;
         var fullname = btn.attr("data-full-name");
         var parts = fullname.split("/");
-        var name = parts[0];
+        var user = parts[0];
         var repo = parts[1];
-        var data = {name: name, repo: repo};
+        var data = {user: user, repo: repo};
         var toggle = function () {
             Repos.updateButton(btn);
         };

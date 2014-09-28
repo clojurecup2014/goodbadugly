@@ -82,6 +82,7 @@
   [cookies user reponame]
   (let [token   (token cookies)
         repo    (repos/specific-repo user reponame {:oauth-token token})]
+    (create-webhook token user reponame)
     (when (:private repo)
       (add-gbu-user token repo))
     {:status 200
