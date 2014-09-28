@@ -2,24 +2,15 @@
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
             [tentacles.pulls :as pulls]
+            [gbu.utils :as utils]
             popen)
   (:import java.io.File))
 
 (def github-basic-auth (or (System/getenv "GITHUB_BASIC_AUTH") "goodbadugly:ClojureCup2014"))
 
-(defn- keywordize 
-  [s]
-  (-> s .toLowerCase (.replace "_" "-") keyword))
-
-(defn make-tmp-dir []
-  (let [dirname (str "gbu-" (java.util.UUID/randomUUID))
-        dir     (File. dirname)]
-    (.mkdir dir)
-    dirname))
-
 (defn clone-repo
   [url sha]
-  (let [path       (make-tmp-dir)
+  (let [path       (utils/make-tmp-dir)
         clone      (popen/popen ["git" "clone" url path] :redirect true :dir ".")
         _          (println "Cloning" url "to" path "...")
         _          (popen/join clone)
@@ -37,41 +28,24 @@
       (let [results-txt (slurp (str path "/eastwood-results.txt"))]
         (read-string (str "[" results-txt "]"))))))
 
-(defn- find-file [files ends-with]
-  (->> files
-    (filter #(.endsWith (.getCanonicalPath %) ends-with))
-    first))
-
-(defn- relative-to-project
-  [dir file]
-  (-> file
-    .getCanonicalPath
-    (.replaceAll (str ".*/" dir "/") "")))
-
 (defn- result-full-path
+  "Does a best effort to match the path returned
+by eastwood to a file in the project."
   [files project-dir {path :file :as result}]
-  (if-let [file (find-file files path)]
-    (assoc result :file (relative-to-project project-dir file))
+  (if-let [file (utils/find-file files path)]
+    (assoc result :file (utils/relative-to-dir project-dir file))
     result))
 
-(defn- clojure-file?
-  [filename]
-  (.contains (.replaceAll filename ".*\\." "") "clj"))
-
 (defn- match-pr-file
+  "Checks if the result matches any files that 
+are included in the PR files and adds the pr-file
+to the result under the key :pull-req-file."
   [pr-files {:keys [file] :as result}]
   (if-let [pr-file (->> pr-files
                      (filter #(= file (:filename %)))
                      first)]
     (assoc result :pull-req-file pr-file)
     result))
-
-(defn- abs-line->patch-line
-  "Takes the string for a patch and returns 
-the line relative to it or nil if it's outside
-the patch."
-  [patch line]
-  line)
 
 (defn- comment-exists? 
   "Returns true if the comment exists in the same 
@@ -90,9 +64,9 @@ exist already."
   [user reponame id sha comments 
    {:keys [pull-req-file line msg file] :as result}]
   (let [patch    (:patch pull-req-file)
-        rel-line (abs-line->patch-line patch line)]
+        rel-line (utils/abs-line->patch-line patch line)]
     (when-not (comment-exists? result comments)
-      (prn 
+      (prn
         (pulls/create-comment 
           user reponame id sha 
           file rel-line msg 
@@ -114,7 +88,7 @@ a file in the project."
     (println "Checking if any PR file is a Clojure file...")
     (when (->> pr-files
             (map :filename)
-            (filter clojure-file?))
+            (filter utils/clojure-file?))
       (let [dirname   (clone-repo url sha)
             results   (run-eastwood dirname)]
         (when results
@@ -129,7 +103,7 @@ a file in the project."
             (println "Created" cnt "comments.")))))))
 
 (defmulti handle-event ^:private
-  (fn [event-type _] (keywordize event-type)))
+  (fn [event-type _] (utils/keywordize event-type)))
 
 (defmethod handle-event :ping
   [_ event]
@@ -148,5 +122,5 @@ a file in the project."
 (defn run
   [event-type event-raw]
   (let [event (and (seq event-raw)
-                   (json/read-str event-raw :key-fn keywordize))]
+                   (json/read-str event-raw :key-fn utils/keywordize))]
     (handle-event event-type event)))
