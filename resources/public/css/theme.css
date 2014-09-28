@@ -114,27 +114,34 @@ input {
 
 #repo-list ul {
     margin: 0px;
-    padding: 0px;
+    padding: 10px;
     text-align: left;
     border-radius: 5px;
     background: rgba(0,0,0,.5);
 }
 
 #repo-list li {
-    padding: 10px;
+    padding-bottom: 5px;
     list-style: none;
 }
 
 #repo-list li button {
     border-radius: 5px;
+    background: #333;
+    margin: 13px 0px;
+    border: 0px;
+    padding: 5px 10px;
 }
 
 #repo-list li button.on{
     color: #0F0;
+    font-weight: bold;
+    text-shadow: -1px 0 #090, 0 1px #090, 1px 0 #090, 0 -1px #090;
 }
 
 #repo-list li button.off{
-    color: #666;
+    color: #CCC;
+    text-shadow: -1px 0 #666, 0 1px #666, 1px 0 #666, 0 -1px #666;
 }
 
 #repo-list input {
@@ -142,7 +149,7 @@ input {
     margin: 20px 0px;
 }
 
-#repo-list li button,
+#repo-list li .switch,
 #repo-list li .info {
     float: left;
 }

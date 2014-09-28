@@ -31,7 +31,15 @@
   </script>
   <script id="repo-item-tplt" type="text/x-handlebars-template">
     <li>
-      <button data-full-name="{{full_name}}" class="{{gbu}}">On</button>
+      <div class="switch">
+        <button data-full-name="{{full_name}}" class="{{gbu}}">
+          {{#if webhook_active}}
+          On
+          {{else}}
+          Off
+          {{/if}}
+        </button>
+      </div>
       <div class="info">
         <a href="{{html_url}}">
           <h4 class="name">{{full_name}}</h4>
