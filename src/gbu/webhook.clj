@@ -90,8 +90,8 @@ a file in the project."
             (filter utils/clojure-file?))
       (let [dirname   (clone-repo url sha)
             results   (run-eastwood dirname)]
+        (println "Eastwood made" (count results) "comments.")
         (when results
-          (println "Eastwood made" (count results) "comment.")
           (let [files    (file-seq (io/file dirname))
                 comments (pulls/comments user reponame pr-id {:auth github-basic-auth})
                 cnt      (->> results 
@@ -101,9 +101,9 @@ a file in the project."
                            (map (partial create-comment user reponame pr-id sha comments))
                            (filter identity)
                            count)]
-            (println "Deleting temp directory" dirname)
-            (utils/delete-recursively dirname)
-            (println "Created" cnt "comments.")))))))
+            (println "Created" cnt "comments.")))
+        (println "Deleting temp directory" dirname)
+        (utils/delete-recursively dirname)))))
 
 (defmulti handle-event ^:private
   (fn [event-type _] (utils/keywordize event-type)))
