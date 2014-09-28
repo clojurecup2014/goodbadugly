@@ -13,6 +13,15 @@
 (html/defsnippet repos-snip "templates/snippets.html" [:#repos]
   [])
 
+(html/defsnippet vote-snip "templates/snippets.html" [:#vote]
+  [])
+
+(html/defsnippet contact-snip "templates/snippets.html" [:#contact]
+  [])
+
+(html/defsnippet config-snip "templates/snippets.html" [:#config]
+  [])
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Web handlers
 
@@ -30,3 +39,22 @@
      :body (#'base "Repos" (repos-snip))}
     {:status 302
      :headers {"location" "/"}}))
+
+(defn config
+  []
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (#'base "Vote for Us" (config-snip))})
+
+(defn contact
+  []
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (#'base "Vote for Us" (contact-snip))})
+
+
+(defn vote
+  []
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (#'base "Vote for Us" (vote-snip))})

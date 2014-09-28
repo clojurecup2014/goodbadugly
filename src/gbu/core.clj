@@ -17,6 +17,9 @@
   ;; Pages
   (GET "/" [] (web/home))
   (GET "/repos" {cookies :cookies} (web/repos cookies))
+  (GET "/config" [] (web/config))
+  (GET "/contact" [] (web/contact))
+  (GET "/vote" [] (web/vote))
   ;; Endpoints
   (GET "/api/login"
     []
