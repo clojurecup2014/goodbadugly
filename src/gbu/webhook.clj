@@ -50,11 +50,11 @@ to the result under the key :pull-req-file."
 (defn- comment-exists? 
   "Returns true if the comment exists in the same 
 file, the same line and the content is the same."
-  [{:keys [file line msg] :as result} comments]
-  (some (fn [{:keys [original-position body path]}]
-          (and 
+  [{:keys [file msg] :as result} rel-line comments]
+  (some (fn [{:keys [position body path]}]
+          (and
             (= file path)
-            (= line original-position)
+            (= rel-line position)
             (= msg body)))
     comments))
 
@@ -65,12 +65,11 @@ exist already."
    {:keys [pull-req-file line msg file] :as result}]
   (let [patch    (:patch pull-req-file)
         rel-line (utils/abs-line->patch-line patch line)]
-    (when-not (comment-exists? result comments)
-      (prn
-        (pulls/create-comment 
-          user reponame id sha 
-          file rel-line msg 
-          {:auth github-basic-auth})))))
+    (when-not (comment-exists? result rel-line comments)
+      (pulls/create-comment 
+        user reponame id sha
+        file rel-line msg 
+        {:auth github-basic-auth}))))
 
 (defn- handle-pull-req 
   "Clones the repo and checks out the PR's latest sha.
@@ -99,6 +98,7 @@ a file in the project."
                            (map (partial match-pr-file pr-files))
                            (filter :pull-req-file)
                            (map (partial create-comment user reponame pr-id sha comments))
+                           (filter identity)
                            count)]
             (println "Created" cnt "comments.")))))))
 
