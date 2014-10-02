@@ -6,7 +6,7 @@
             popen)
   (:import java.io.File))
 
-(def github-basic-auth (or (System/getenv "GITHUB_BASIC_AUTH") "goodbadugly:ClojureCup2014"))
+(def github-basic-auth (or (System/getenv "GITHUB_BASIC_AUTH") ""))
 
 (defn clone-repo
   [url sha]
@@ -19,7 +19,7 @@
         _          (popen/join checkout)]
     path))
 
-(defn- run-eastwood 
+(defn- run-eastwood
   [path]
   (let [lein      (popen/popen ["lein" "eastwood" "{:results-file true}"] :redirect true :dir path)
         _          (println "Running eastwood...")
@@ -37,7 +37,7 @@ by eastwood to a file in the project."
     result))
 
 (defn- match-pr-file
-  "Checks if the result matches any files that 
+  "Checks if the result matches any files that
 are included in the PR files and adds the pr-file
 to the result under the key :pull-req-file."
   [pr-files {:keys [file] :as result}]
@@ -47,8 +47,8 @@ to the result under the key :pull-req-file."
     (assoc result :pull-req-file pr-file)
     result))
 
-(defn- comment-exists? 
-  "Returns true if the comment exists in the same 
+(defn- comment-exists?
+  "Returns true if the comment exists in the same
 file, the same line and the content is the same."
   [{:keys [file msg] :as result} rel-line comments]
   (some (fn [{:keys [position body path]}]
@@ -59,19 +59,19 @@ file, the same line and the content is the same."
     comments))
 
 (defn- create-comment
-  "Creates a comment only if the same comment doesn't 
+  "Creates a comment only if the same comment doesn't
 exist already."
-  [user reponame id sha comments 
+  [user reponame id sha comments
    {:keys [pull-req-file line msg file] :as result}]
   (let [patch    (:patch pull-req-file)
         rel-line (utils/abs-line->patch-line patch line)]
     (when-not (comment-exists? result rel-line comments)
-      (pulls/create-comment 
+      (pulls/create-comment
         user reponame id sha
-        file rel-line msg 
+        file rel-line msg
         {:auth github-basic-auth}))))
 
-(defn- handle-pull-req 
+(defn- handle-pull-req
   "Clones the repo and checks out the PR's latest sha.
 Does a best effort to match the path returned by eastwood to
 a file in the project."
@@ -94,7 +94,7 @@ a file in the project."
         (when results
           (let [files    (file-seq (io/file dirname))
                 comments (pulls/comments user reponame pr-id {:auth github-basic-auth})
-                cnt      (->> results 
+                cnt      (->> results
                            (map (partial result-full-path files dirname))
                            (map (partial match-pr-file pr-files))
                            (filter :pull-req-file)

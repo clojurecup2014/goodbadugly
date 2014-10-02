@@ -8,14 +8,14 @@
 (def ^:private access-token-url "https://github.com/login/oauth/access_token")
 
 (def ^:private scope "repo,user:email")
-(def ^:private client-id "7b43cab01bf06f40d2a0")
-(def ^:private client-secret "9f902d8755cbe38672fc89fecd1c8a3ceb539daa")
+(def ^:private client-id "")
+(def ^:private client-secret "")
 
 (def ^:private webhook-config
   {:url "http://goodbadugly.clojurecup.com/api/webhook"
    :content_type "json"})
 
-(defn- qs-map 
+(defn- qs-map
   [qs]
   (let [split (fn [x s] (map str (.split x s)))]
     (->> (split qs "&")
@@ -58,7 +58,7 @@
     (->> hooks
       (filter gbu-webhook?)
       first)))
-  
+
 
 (defn- add-status
   [token repo]
@@ -78,7 +78,7 @@
     (->> (into user-repos orgs-repos)
       (map (partial add-status token)))))
 
-(defn repos 
+(defn repos
   [cookies]
   (if-let [token (token cookies)]
     {:status 200
