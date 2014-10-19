@@ -72,3 +72,6 @@ the patch."
                    (func func f2)))
                (clojure.java.io/delete-file f))]
     (func func (clojure.java.io/file fname))))
+
+(defn env [var-name & [default]]
+  (or (System/getenv var-name) default))

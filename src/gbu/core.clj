@@ -6,12 +6,12 @@
             [ring.adapter.jetty :as jetty]
             [gbu.web :as web]
             [gbu.api :as api]
-            [gbu.webhook :as webhook]))
+            [gbu.webhook :as webhook]
+            [gbu.utils :as utils]))
 
 (defn http-port
   []
-  (let [env-port (System/getenv "GBU_HTTP_PORT")]
-    (or (and env-port (Integer/parseInt env-port)) 5000)))
+  (Integer/parseInt (utils/env "GBU_HTTP_PORT" "5000")))
 
 (defroutes app
   ;; Pages

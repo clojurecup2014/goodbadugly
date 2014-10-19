@@ -2,14 +2,15 @@
   (:require [clj-http.client :as client]
             [tentacles.repos :as repos]
             [tentacles.orgs :as orgs]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [gbu.utils :as utils]))
 
 (def ^:private authorize-url "https://github.com/login/oauth/authorize")
 (def ^:private access-token-url "https://github.com/login/oauth/access_token")
 
 (def ^:private scope "repo,user:email")
-(def ^:private client-id "")
-(def ^:private client-secret "")
+(def ^:private client-id (utils/env "GBU_CLIENT_ID"))
+(def ^:private client-secret (utils/env "GBU_CLIENT_SECRET"))
 
 (def ^:private webhook-config
   {:url "http://goodbadugly.clojurecup.com/api/webhook"
@@ -44,7 +45,7 @@
         token  ((qs-map body)"access_token")]
     {:status 302
      :headers {"location" "/repos"
-               "set-cookie" (str "token=" token)}}))
+               "set-cookie" (str "token=" token ";Path=/")}}))
 
 (defn- owner?
   [repo]
