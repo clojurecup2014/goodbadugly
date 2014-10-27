@@ -6,7 +6,7 @@
   (-> s .toLowerCase (.replace "_" "-") keyword))
 
 (defn make-tmp-dir []
-  (let [dirname (str "/tmp/gbu-" (java.util.UUID/randomUUID))
+  (let [dirname (str "tmp/gbu-" (java.util.UUID/randomUUID))
         dir     (File. dirname)]
     (.mkdir dir)
     dirname))
