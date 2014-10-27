@@ -1,1 +1,1 @@
-web: java  -cp target/clojure-getting-started-standalone.jar clojure.main -m clojure-getting-started.web
+web: java  -cp target/gbu.jar clojure.main -m gbu.core
