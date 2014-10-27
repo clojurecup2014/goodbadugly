@@ -11,7 +11,7 @@
 
 (defn http-port
   []
-  (Integer/parseInt (utils/env "GBU_HTTP_PORT" "5000")))
+  (Integer/parseInt (utils/env "PORT" "5000")))
 
 (defroutes app
   ;; Pages
