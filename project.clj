@@ -12,4 +12,5 @@
                  [org.clojure/data.json "0.2.5"]
                  [popen "0.3.0"]]
   :main gbu.core
-  :uberjar-name "gbu.jar")
+  :uberjar-name "gbu.jar"
+  :min-lein-version "2.0.0")
