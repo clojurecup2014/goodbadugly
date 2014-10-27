@@ -22,7 +22,7 @@
 (defn- run-eastwood
   [path]
   (let [lein      (popen/popen ["lein" "eastwood" "{:results-file true}"] :redirect true :dir path)
-        _          (println "Running eastwood...")
+        _         (println "Running eastwood...")
         code      (popen/join lein)]
     (when-not (zero? code)
       (let [results-txt (slurp (str path "/eastwood-results.txt"))]

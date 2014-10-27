@@ -1,12 +1,12 @@
 (ns gbu.utils
   (:import java.io.File))
 
-(defn keywordize 
+(defn keywordize
   [s]
   (-> s .toLowerCase (.replace "_" "-") keyword))
 
 (defn make-tmp-dir []
-  (let [dirname (str "gbu-" (java.util.UUID/randomUUID))
+  (let [dirname (str "/tmp/gbu-" (java.util.UUID/randomUUID))
         dir     (File. dirname)]
     (.mkdir dir)
     dirname))
@@ -50,7 +50,7 @@
     :same   [(inc local) (inc global)]))
 
 (defn abs-line->patch-line
-  "Takes the string for a patch and returns 
+  "Takes the string for a patch and returns
 the line relative to it or nil if it's outside
 the patch."
   [patch line-num]
@@ -59,12 +59,12 @@ the patch."
     (when line
       (let [line-type (patch-line-type line)
             [local global :as new-pos] (new-position line positions)]
-        (if (and (= global line-num) 
+        (if (and (= global line-num)
                  (not (#{:patch :del} line-type)))
           local
           (recur lines new-pos))))))
 
-(defn delete-recursively 
+(defn delete-recursively
   [fname]
   (let [func (fn [func f]
                (when (.isDirectory f)

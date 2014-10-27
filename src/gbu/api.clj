@@ -11,9 +11,10 @@
 (def ^:private scope "repo,user:email")
 (def ^:private client-id (utils/env "GBU_CLIENT_ID"))
 (def ^:private client-secret (utils/env "GBU_CLIENT_SECRET"))
+(def ^:private url (utils/env "GBU_URL" "https://goodbadugly-clj.herokuapp.com"))
 
 (def ^:private webhook-config
-  {:url "http://goodbadugly.clojurecup.com/api/webhook"
+  {:url (str url "/api/webhook")
    :content_type "json"})
 
 (defn- qs-map
