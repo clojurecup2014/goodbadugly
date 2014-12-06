@@ -7,6 +7,7 @@
   (:import java.io.File))
 
 (def github-basic-auth (or (System/getenv "GITHUB_BASIC_AUTH") ""))
+(def warnings-file "eastwood-results.txt")
 
 (defn clone-repo
   [url sha]
@@ -21,11 +22,12 @@
 
 (defn- run-eastwood
   [path]
-  (let [lein      (popen/popen ["lein" "eastwood" "{:results-file true}"] :redirect true :dir path)
+  (let [opts      (str "{:out \"" warnings-file "\" :warning-format :map-v2}")
+        lein      (popen/popen ["lein" "eastwood" opts] :redirect true :dir path)
         _         (println "Running eastwood...")
         code      (popen/join lein)]
     (when-not (zero? code)
-      (let [results-txt (slurp (str path "/eastwood-results.txt"))]
+      (let [results-txt (slurp (str path "/" warnings-file))]
         (read-string (str "[" results-txt "]"))))))
 
 (defn- result-full-path
