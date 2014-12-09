@@ -1,15 +1,20 @@
 (ns gbu.webhook
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
+            [clojure.edn :as edn]
             [tentacles.pulls :as pulls]
+            [tentacles.repos :as repos]
             [gbu.utils :as utils]
             popen)
   (:import java.io.File))
 
 (def github-basic-auth (or (System/getenv "GITHUB_BASIC_AUTH") ""))
-(def warnings-file "eastwood-results.txt")
+(def warnings-file-path "eastwood-results.txt")
+(def config-file-path "gbu.config")
 
 (defn clone-repo
+  "Clones the repository into a temporary directory
+and checks out the last commit associated to the PR."
   [url sha]
   (let [path       (utils/make-tmp-dir)
         clone      (popen/popen ["git" "clone" url path] :redirect true :dir ".")
@@ -20,14 +25,30 @@
         _          (popen/join checkout)]
     path))
 
+(defn config-file
+  "Returns the configuration file as a map if there
+is one or an empty map otherwise."
+  [user repo]
+  (let [req-opts  {:str? true :ref "master" :auth github-basic-auth}
+        {:keys [content]}  (repos/contents user repo config-file-path req-opts)]
+    (try
+      (if content
+        (edn/read-string content)
+        {})
+      (catch Exception ex
+        (println "Error while getting the configuration file" ex)
+        {}))))
+
 (defn- run-eastwood
-  [path]
-  (let [opts      (str "{:out \"" warnings-file "\" :warning-format :map-v2}")
-        lein      (popen/popen ["lein" "eastwood" opts] :redirect true :dir path)
+  [path config-opts]
+  (let [default-opts {:out warnings-file-path :warning-format :map-v2}
+        opts      (merge config-opts default-opts)
+        _         (prn opts)
+        lein      (popen/popen ["lein" "eastwood" (pr-str opts)] :redirect true :dir path)
         _         (println "Running eastwood...")
         code      (popen/join lein)]
     (when-not (zero? code)
-      (let [results-txt (slurp (str path "/" warnings-file))]
+      (let [results-txt (slurp (str path "/" warnings-file-path))]
         (read-string (str "[" results-txt "]"))))))
 
 (defn- result-full-path
@@ -90,8 +111,9 @@ a file in the project."
     (when (->> pr-files
             (map :filename)
             (filter utils/clojure-file?))
-      (let [dirname   (clone-repo url sha)
-            results   (run-eastwood dirname)]
+      (let [dirname  (clone-repo url sha)
+            opts     (config-file user reponame)
+            results  (run-eastwood dirname opts)]
         (println "Eastwood made" (count results) "comments.")
         (when results
           (let [files    (file-seq (io/file dirname))
