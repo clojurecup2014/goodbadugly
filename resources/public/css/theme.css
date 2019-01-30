@@ -70,6 +70,14 @@ input {
   padding: 30px;
 }
 
+#content a {
+  text-decoration: underline;
+}
+
+#content a.btn {
+  text-decoration: none;
+}
+
 /* Repositories */
 
 #repos .one {
